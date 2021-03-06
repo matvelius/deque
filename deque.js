@@ -2,15 +2,15 @@ const fs = require('fs')
 
 let readline = require('readline');
 let rl = readline.createInterface({
-  // input: process.stdin,
-  input: fs.createReadStream('test.txt'),
+  input: process.stdin,
+  // input: fs.createReadStream('test.txt'),
   output: process.stdout,
   terminal: false
 });
 
-let logger = fs.createWriteStream('output.txt', {
-  flags: 'a' // 'a' means appending (old data will be preserved)
-})
+// let logger = fs.createWriteStream('output.txt', {
+//   flags: 'a' // 'a' means appending (old data will be preserved)
+// })
 
 let lineIndex = 0
 let numberOfCommands = 0
@@ -20,18 +20,26 @@ let deque = null
 class Deque {
 
   constructor(length) {
-    this.array = new Array(length)
+    this.array = this.initializeArray(length)
     this.maxNumberOfElements = length
     this.frontIndex = 0
     this.backIndex = 0
     this.numberOfElements = 0
   }
 
+  initializeArray(length) {
+    let nullArray = new Array(length)
+    for (let i = 0; i < length; i++) {
+      nullArray[i] == null
+    }
+    return nullArray
+  }
+
   push_front(value) {
 
     if (this.numberOfElements == this.maxNumberOfElements) {
-      // console.log("error")
-      logger.write('error\n')
+      console.log("error")
+      // logger.write('error\n')
     } else {
 
       if (this.numberOfElements != 0) { // change the index only if the array is not empty
@@ -51,8 +59,8 @@ class Deque {
   push_back(value) {
     
     if (this.numberOfElements == this.maxNumberOfElements) {
-      // console.log("error")
-      logger.write('error\n')
+      console.log("error")
+      // logger.write('error\n')
     } else {
       
       if (this.numberOfElements != 0) {
@@ -67,12 +75,12 @@ class Deque {
 
   pop_front() {
 
-    if (!this.array[this.frontIndex]) {
-      // console.log("error")
-      logger.write('error\n')
+    if (this.array[this.frontIndex] == null) {
+      console.log("error")
+      // logger.write('error\n')
     } else {
-      // console.log(this.array[this.frontIndex])
-      logger.write(`${this.array[this.frontIndex]}\n`)
+      console.log(this.array[this.frontIndex])
+      // logger.write(`${this.array[this.frontIndex]}\n`)
       this.array[this.frontIndex] = null
       if (this.numberOfElements > 1) {
         this.frontIndex = (this.frontIndex + 1) % this.maxNumberOfElements
@@ -84,12 +92,12 @@ class Deque {
 
   pop_back() {
 
-    if (!this.array[this.backIndex]) {
-      // console.log("error")
-      logger.write('error\n')
+    if (this.array[this.backIndex] == null) {
+      console.log("error")
+      // logger.write('error\n')
     } else {
-      // console.log(this.array[this.backIndex])
-      logger.write(`${this.array[this.backIndex]}\n`)
+      console.log(this.array[this.backIndex])
+      // logger.write(`${this.array[this.backIndex]}\n`)
       this.array[this.backIndex] = null
 
       if (this.numberOfElements > 1) {
