@@ -1,16 +1,59 @@
-const fs = require('fs')
+// ПРИНЦИП РАБОТЫ
+
+// Структура "дек" реализована с помощью зацикленного массива, так как условие
+// задачи не позволяет использовать связной список. Дек уникален тем, что позволяет
+// "и добавлять, и извлекать элементы с обоих концов" (Практикум, Структуры данных: 
+// очередь и дек), в отлии от стека и очереди. 
+
+// Получив на входе кол-во предстоящих команд и размер дека, программа инициализирует
+// массив заданной длины и заполняет все его ячейки величиной null. Кроме этого, создаются
+// индексы frontIndex и backIndex для отслеживания первого и последнего элементов (что 
+// обеспечивает "зацикленность"). 
+
+// Последующий ввод пользователя проверяется на наличие ключевых слов - команд. Команды
+// push_front и push_back передают следующее после них число соответствующим методам
+// класса Deque, которые в свою очередь добавляют элемент в начало или в конец массива (если
+// массив еще не заполнен) и увеличивают или уменьшают соответсвующий индекс. Команды
+// pop_front и pop_back извлекают элементы с начала или конца дека, и тоже увеличивают
+// или уменьшают соответствующие индексы.
+
+// Существуют два исключения, при которых оба индекса должны указывать на один и тот-же 
+// элемент: когда в массиве 1 элемент при операции pop, и когда массив пустой при операции
+// push.
+
+
+// ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ
+
+// Моя реализация дека отслеживает общее кол-во содержимых элементов и индексы начала и 
+// конца, не позволяя пользователю выйти за границы зацикленного массива при добавлении,
+// и так же выдает соответствующую ошибку при попытке извлечения содержимого пустой ячейки.
+
+// Для вычисления индекса во время перехода от последней ячейки к первой используется 
+// оператор modulo (%), а от первой к последней - просто переводим индекс в конец массива.
+
+// Количество действий пользователя строго ограничено, что позволяет сравнительно легко 
+// исключить некорректное поведение програмы. Кроме этого, в моем алгоритме есть различные 
+// проверки ввода и учтены крайние случаи, и у меня не получилось сломать программу во
+// время тестирования.
+
+
+// ВРЕМЕННАЯ СЛОЖНОСТЬ
+
+// Все возможные действия пользователя стоят О(1), так как нахождение элемента в массиве по
+// индексу происходит моментально, без надобности обхода всего массива.
+
+
+// ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ
+
+// Все данные программы хранятся в одном и том-же массиве размера n, заданного пользователем.
+// Таким образом временная сложность моего алгоритма O(n).
 
 let readline = require('readline');
 let rl = readline.createInterface({
   input: process.stdin,
-  // input: fs.createReadStream('test.txt'),
   output: process.stdout,
   terminal: false
 });
-
-// let logger = fs.createWriteStream('output.txt', {
-//   flags: 'a' // 'a' means appending (old data will be preserved)
-// })
 
 let lineIndex = 0
 let numberOfCommands = 0
@@ -39,10 +82,9 @@ class Deque {
 
     if (this.numberOfElements == this.maxNumberOfElements) {
       console.log("error")
-      // logger.write('error\n')
     } else {
 
-      if (this.numberOfElements != 0) { // change the index only if the array is not empty
+      if (this.numberOfElements != 0) {
         if (this.frontIndex == 0) { 
           this.frontIndex = this.maxNumberOfElements - 1
         } else { 
@@ -60,7 +102,6 @@ class Deque {
     
     if (this.numberOfElements == this.maxNumberOfElements) {
       console.log("error")
-      // logger.write('error\n')
     } else {
       
       if (this.numberOfElements != 0) {
@@ -77,10 +118,8 @@ class Deque {
 
     if (this.array[this.frontIndex] == null) {
       console.log("error")
-      // logger.write('error\n')
     } else {
       console.log(this.array[this.frontIndex])
-      // logger.write(`${this.array[this.frontIndex]}\n`)
       this.array[this.frontIndex] = null
       if (this.numberOfElements > 1) {
         this.frontIndex = (this.frontIndex + 1) % this.maxNumberOfElements
@@ -94,10 +133,8 @@ class Deque {
 
     if (this.array[this.backIndex] == null) {
       console.log("error")
-      // logger.write('error\n')
     } else {
       console.log(this.array[this.backIndex])
-      // logger.write(`${this.array[this.backIndex]}\n`)
       this.array[this.backIndex] = null
 
       if (this.numberOfElements > 1) {
@@ -174,98 +211,3 @@ function processCommand(command) {
   }
 
 }
-
-// function test() {
-//   numberOfCommands = 4
-//   dequeSize = 4
-//   let myDeque = new Deque(dequeSize)
-
-//   myDeque.push_front(861)
-//   myDeque.push_front(-819)
-//   myDeque.pop_back()
-//   myDeque.pop_back()
-
-//   return
-// }
-
-
-// function test() {
-//   numberOfCommands = 7
-//   dequeSize = 10
-//   let myDeque = new Deque(dequeSize)
-
-//   myDeque.push_front(-855)
-//   myDeque.push_front(720)
-//   myDeque.pop_back()
-//   myDeque.pop_back()
-//   myDeque.push_back(844)
-//   myDeque.pop_back()
-//   myDeque.push_back(823)
-
-//   return
-// }
-
-// function test() {
-//   numberOfCommands = 6
-//   dequeSize = 6
-//   let myDeque = new Deque(dequeSize)
-
-//   myDeque.push_front(-201)
-//   myDeque.push_back(959)
-//   myDeque.push_back(102)
-//   myDeque.push_front(20)
-//   myDeque.pop_front()
-//   myDeque.pop_back()
-
-//   return
-// }
-
-// function test() {
-//   numberOfCommands = 25
-//   dequeSize = 5
-//   let myDeque = new Deque(dequeSize)
-
-//   myDeque.push_front(861)
-//   myDeque.push_front(-819)
-//   myDeque.push_front(193)
-//   myDeque.push_front(921)
-//   myDeque.push_front(-210)
-
-//   myDeque.pop_front()
-//   myDeque.pop_front()
-//   myDeque.pop_front()
-//   myDeque.pop_front()
-//   myDeque.pop_front()
-
-//   myDeque.push_back(43)
-//   myDeque.push_back(56)
-//   myDeque.push_back(123)
-//   myDeque.push_back(-533)
-//   myDeque.push_back(-10)
-
-//   myDeque.pop_back()
-//   myDeque.pop_back()
-//   myDeque.pop_back()
-//   myDeque.pop_back()
-//   myDeque.pop_back()
-
-//   myDeque.push_front(61)
-//   myDeque.push_front(19)
-//   myDeque.push_front(93)
-//   myDeque.push_front(91)
-//   myDeque.push_front(-21)
-
-//   console.log(JSON.stringify(myDeque))
-
-//   return
-// }
-
-// test()
-
-// Заполняешь полностью дек,
-//   удаляешь полностью сначала
-//     добавляешь новые с конца
-
-//   удаляешь полностью с конца
-//     добавляешь с начала
-
