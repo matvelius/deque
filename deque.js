@@ -1,4 +1,4 @@
-// ID успешной посылки: 49260468
+// ID успешной посылки: 49313195
 
 // ПРИНЦИП РАБОТЫ
 
@@ -73,11 +73,7 @@ class Deque {
   }
 
   initializeArray(length) {
-    let nullArray = new Array(length)
-    for (let i = 0; i < length; i++) {
-      nullArray[i] == null
-    }
-    return nullArray
+    return new Array(length).fill(null)
   }
 
   push_front(value) {
